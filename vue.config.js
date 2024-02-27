@@ -14,5 +14,15 @@ module.exports = defineConfig({
       })
       return definitions
     })
+  },
+  pluginOptions: {
+    electronBuilder: {
+      builderOptions: {
+        productName: "ZJ_聊天",
+        appId: `com.electron.${'zj'}`,
+        publish: ["github"],
+        copyright: `Copyright © year zj` //版权
+      }
+    }
   }
 })

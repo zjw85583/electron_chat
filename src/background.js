@@ -3,7 +3,7 @@
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
-
+import { autoUpdater } from "electron-updater"
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
@@ -12,8 +12,8 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 900,
-    height: 600,
+    width: 550,
+    // height: 300,
     webPreferences: {
 
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -22,7 +22,7 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
       webSecurity: false, // 允许跨域
     },
-    autoHideMenuBar: true,
+    // autoHideMenuBar: true,
 
   })
 
@@ -34,6 +34,7 @@ async function createWindow() {
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
+    autoUpdater.checkForUpdatesAndNotify() // 自动更新
   }
 }
 

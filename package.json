@@ -2,6 +2,8 @@
   "name": "happy_chat",
   "version": "0.1.0",
   "private": true,
+  "author": "ZJ",
+  "repository": "https://github.com/zjw85583/electron_chat.git",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -15,6 +17,7 @@
   "dependencies": {
     "ant-design-vue": "^3.2.0",
     "core-js": "^3.8.3",
+    "electron-updater": "^6.1.7",
     "express": "^4.18.2",
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",

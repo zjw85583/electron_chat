@@ -4,37 +4,40 @@
 
     <!-- 头像昵称 -->
     <div class="header">
-      <h2>小朱~彤彤</h2>
+      <h2>ZJ_~LJ_</h2>
     </div>
 
     <!-- 消息列表 -->
     <div class="chatList">
-      <div v-for="(item, index) in list" :key="index">
-        <!-- 左边消息 -->
-        <div class="leftBox box" v-if="!item.type">
-          <!-- 头像 -->
-          <a-avatar class="avatar" shape="square" :size="35">
-            <template #icon>
-              <UserOutlined />
-            </template>
-          </a-avatar>
-          <!-- 消息内容 -->
-          <div class="content" :style="{ maxWidth: contentWidth + 'px', marginLeft: '10px' }">
-            <div>{{ item.content }}</div>
+      <img src="@/assets/chat.jpg" class="img">
+      <div class="bgcChat">
+        <div v-for="(item, index) in list" :key="index">
+          <!-- 左边消息 -->
+          <div class="leftBox box" v-if="!item.type">
+            <!-- 头像 -->
+            <a-avatar class="avatar" shape="square" :size="35">
+              <template #icon>
+                <UserOutlined />
+              </template>
+            </a-avatar>
+            <!-- 消息内容 -->
+            <div class="content" :style="{ maxWidth: contentWidth + 'px', marginLeft: '10px' }">
+              <div>{{ item.content }}</div>
+            </div>
           </div>
-        </div>
-        <!-- 右侧消息 -->
-        <div class="rightBox box" v-else>
-          <!-- 消息内容 -->
-          <div class="content" :style="{ maxWidth: contentWidth + 'px', marginRight: '10px' }">
-            <div>{{ item.content }}</div>
+          <!-- 右侧消息 -->
+          <div class="rightBox box" v-else>
+            <!-- 消息内容 -->
+            <div class="content" :style="{ maxWidth: contentWidth + 'px', marginRight: '10px' }">
+              <div>{{ item.content }}</div>
+            </div>
+            <!-- 头像 -->
+            <a-avatar class="avatar" shape="square" :size="35">
+              <template #icon>
+                <UserOutlined style="color: red;" />
+              </template>
+            </a-avatar>
           </div>
-          <!-- 头像 -->
-          <a-avatar class="avatar" shape="square" :size="35">
-            <template #icon>
-              <UserOutlined style="color: red;" />
-            </template>
-          </a-avatar>
         </div>
       </div>
     </div>
@@ -66,20 +69,21 @@ export default {
   methods: {
     socketHandle() {
       // 连接到socket.io服务器
-      this.socket = io('http://127.0.0.1:8888');
+      this.socket = io('http://192.168.235.46:8888');
       // 添加事件监听---自己
       this.socket.on('message', (data) => {
         // 处理收到的消息
         console.log('Received message:', data);
         this.list.push(data)
+        this.scrollHandle()
       });
       // 添加事件监听 --- 对方
       this.socket.on('dmessage', (data) => {
         // 处理收到的消息
         console.log('Received ·:', data);
         this.list.push(data)
+        this.scrollHandle()
       });
-
     },
     sendMessage(e) {
       e.preventDefault();
@@ -93,13 +97,25 @@ export default {
       // 清空输入框
       this.chatValue = "";
     },
+    // 滚动
+    scrollHandle() {
+      // console.log('bgcChat', bgcChat.target.scrollHeight)
+      // console.log('bgcChat', bgcChat.target.clientHeight)
+
+      const bgcChat = document.querySelector('.bgcChat')
+
+      setTimeout(() => {
+        if (bgcChat.scrollHeight > bgcChat.clientHeight) {
+          bgcChat.scrollTop = bgcChat.scrollHeight
+        }
+      }, 0)
+    }
   },
   mounted() {
     this.$refs.textarea.focus()
     window.addEventListener('resize', () => {
       this.contentWidth = document.documentElement.clientWidth / 2 - 100
     })
-
     // 连接socket
     this.socketHandle()
   },
@@ -139,15 +155,35 @@ export default {
   top: 0;
   display: flex;
 }
+
 .chatList {
-  padding: 10px 20px;
-  overflow-y: auto;
   height: calc(100vh - 98px - 54.5px);
   background-color: #f5f5f5;
+  position: relative;
+  /* overflow: hidden; */
+}
+
+.img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .box {
   margin-bottom: 10px;
+}
+
+.bgcChat {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+  padding: 10px 20px;
+  overflow-y: auto;
 }
 
 .leftBox {
