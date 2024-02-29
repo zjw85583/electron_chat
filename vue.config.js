@@ -18,10 +18,21 @@ module.exports = defineConfig({
   pluginOptions: {
     electronBuilder: {
       builderOptions: {
-        productName: "ZJ_聊天",
+        productName: "聊天hh",
         appId: `com.electron.${'zj'}`,
         publish: ["github"],
-        copyright: `Copyright © year zj` //版权
+        copyright: `Copyright © year zj`, //版权
+        win: {
+          target: 'nsis'
+        },
+        nsis: {
+          oneClick: false, // 辅助安装
+          perMachine: true,
+          allowToChangeInstallationDirectory: true, // 允许用户选择安装目录
+        },
+        linux: {
+          target: 'AppImage',
+        }
       }
     }
   }

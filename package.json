@@ -4,6 +4,7 @@
   "private": true,
   "author": "ZJ",
   "repository": "https://github.com/zjw85583/electron_chat.git",
+  "homepage": "https://gitee.com/zj032910/socket-electron.git",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
