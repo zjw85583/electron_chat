@@ -1,14 +1,12 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 import { autoUpdater } from "electron-updater"
-// Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true } }
-])
-
+const { getBaseUrl } = require('./utils/getBaseUrl.js')
+const path = require('path')
+const { startProcess, exitProcess } = require('./server/index.js')
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
@@ -16,10 +14,12 @@ async function createWindow() {
     // height: 300,
     webPreferences: {
 
+      preload: path.join(__dirname, 'preload.js'),
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+      nodeIntegration: true,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
+      // enableRemoteModule: true, // 是否允许使用remote
       webSecurity: false, // 允许跨域
     },
     // autoHideMenuBar: true,
@@ -34,9 +34,21 @@ async function createWindow() {
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
-    autoUpdater.checkForUpdatesAndNotify() // 自动更新
   }
 }
+
+// 自动更新
+autoUpdater.on('update-available', () => {
+  // 处理更新提示或者自动下载更新
+});
+
+autoUpdater.on('update-downloaded', () => {
+  // 提示用户安装更新
+  autoUpdater.quitAndInstall();
+});
+
+// 检查更新
+autoUpdater.checkForUpdatesAndNotify();
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -44,20 +56,23 @@ app.on('window-all-closed', () => {
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
     app.quit()
+    exitProcess()
   }
 })
 
-app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) createWindow()
-})
+// app.on('activate', () => {
+//   // On macOS it's common to re-create a window in the app when the
+//   // dock icon is clicked and there are no other windows open.
+//   if (BrowserWindow.getAllWindows().length === 0) createWindow()
+// })
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
   createWindow()
+  startProcess()
+  getBaseUrl()
 })
 
 // Exit cleanly on request from parent process in development mode.
@@ -66,11 +81,13 @@ if (isDevelopment) {
     process.on('message', (data) => {
       if (data === 'graceful-exit') {
         app.quit()
+        exitProcess()
       }
     })
   } else {
     process.on('SIGTERM', () => {
       app.quit()
+      exitProcess()
     })
   }
 }

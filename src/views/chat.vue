@@ -4,7 +4,7 @@
 
     <!-- 头像昵称 -->
     <div class="header">
-      <h2>ZJ_~LJ_</h2>
+      <h2>ZJ_~TT_</h2>
     </div>
 
     <!-- 消息列表 -->
@@ -44,6 +44,9 @@
     <a-form class="form">
       <a-textarea class="textarea" ref="textarea" v-model:value.trim="chatValue" :auto-size="{ minRows: 4, maxRows: 4 }"
         @pressEnter="sendMessage" />
+      <div class="fileSty">
+        <FileComponent></FileComponent>
+      </div>
       <div class="send" @click="sendMessage">发送</div>
     </a-form>
   </div>
@@ -52,10 +55,12 @@
 <script>
 import { UserOutlined } from '@ant-design/icons-vue';
 import io from 'socket.io-client';
+import FileComponent from './component/fileComponent'
 export default {
   name: 'Chat',
   components: {
     UserOutlined,
+    FileComponent
   },
   data() {
     return {
@@ -67,9 +72,10 @@ export default {
     }
   },
   methods: {
-    socketHandle() {
+    async socketHandle() {
       // 连接到socket.io服务器
-      this.socket = io('http://192.168.235.46:8888');
+      const baseUrl = await window.ipc.getBaseUrl1('getBaseUrl')
+      this.socket = io(baseUrl);
       // 添加事件监听---自己
       this.socket.on('message', (data) => {
         // 处理收到的消息
@@ -127,6 +133,9 @@ export default {
   position: fixed;
   bottom: 0;
   width: 100%;
+  padding-top: 20px;
+  background-color: #fff;
+  z-index: 999999;
 }
 
 .textarea {
@@ -234,5 +243,11 @@ export default {
   right: -10px;
   transform: rotate(0.25turn);
   background-color: #95ec69;
+}
+
+.fileSty {
+  position: absolute;
+  top: 0;
+  left: 20px;
 }
 </style>

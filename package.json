@@ -1,10 +1,10 @@
 {
   "name": "happy_chat",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "author": "ZJ",
   "repository": "https://github.com/zjw85583/electron_chat.git",
-  "homepage": "https://gitee.com/zj032910/socket-electron.git",
+  "homepage": "https://github.com/zjw85583/electron_chat.git",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -12,14 +12,18 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "postuninstall": "electron-builder install-app-deps",
+    "electron:publish": "vue-cli-service electron:build --publish always",
+    "pkg": "pkg . -t node16-win-x64 --out-path=dist/"
   },
   "main": "background.js",
+  "bin": "./server/index.js",
   "dependencies": {
     "ant-design-vue": "^3.2.0",
+    "axios": "^1.6.7",
     "core-js": "^3.8.3",
-    "electron-updater": "^6.1.7",
     "express": "^4.18.2",
+    "multer": "*",
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",
     "vue": "^3.2.13",
@@ -36,6 +40,7 @@
     "@vue/cli-service": "~5.0.0",
     "@vue/eslint-config-standard": "^6.1.0",
     "electron": "^13.0.0",
+    "electron-updater": "^6.1.8",
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-node": "^11.1.0",

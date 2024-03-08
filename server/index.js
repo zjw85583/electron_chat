@@ -1,8 +1,10 @@
 // socket 服务端
 const express = require('express');
 const { createServer } = require('node:http');
+const path = require('node:path');
 const { Server } = require('socket.io');
-
+// 导入接口
+require(path.join(__dirname, 'api', 'chat.js'))
 const app = express();
 const server = createServer(app);
 const io = new Server(server);

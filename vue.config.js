@@ -1,4 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
+const path = require('path')
 module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,
@@ -17,13 +18,18 @@ module.exports = defineConfig({
   },
   pluginOptions: {
     electronBuilder: {
+      preload: path.join(__dirname, 'src/preload/index.js'),
       builderOptions: {
         productName: "聊天hh",
         appId: `com.electron.${'zj'}`,
-        publish: ["github"],
         copyright: `Copyright © year zj`, //版权
+        // 暴露资源
+        extraResources: [
+          { from: 'config.json', to: '.' },
+          { from: 'server', to: './server' }
+        ],
         win: {
-          target: 'nsis'
+          target: 'nsis',
         },
         nsis: {
           oneClick: false, // 辅助安装
@@ -32,6 +38,12 @@ module.exports = defineConfig({
         },
         linux: {
           target: 'AppImage',
+        },
+        publish: {
+          provider: "github",
+          owner: "zjw85583",
+          repo: "electron_chat",
+          releaseType: "release",
         }
       }
     }
